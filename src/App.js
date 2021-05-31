@@ -7,9 +7,9 @@ function App() {
   const [m, setM] = useState(0);
   const [n, setN] = useState(0);
   const [replicas, setReplicas] = useState(0);
-  const [resultadoReplicas, setResultadoReplicas] = useState([])
+  const [arrayReplicas, setArrayReplicas] = useState([])
+  const [intervaloDeConfianza, setIntervaloDeConfianza] = useState([])
 
-  let arrayTTRs = []
 
   function getTTR() {
     // console.log("n vale: ", n,"m vale: ", m)
@@ -216,20 +216,56 @@ function App() {
   }
 
   function getVariosTTR(amount) {
-    arrayTTRs = []
+    let arrayTTRs = []
     for (let i = 0; i < amount; i++) {
       arrayTTRs.push(getTTR())
     }
-    setResultadoReplicas(arrayTTRs)
+    setArrayReplicas(arrayTTRs)
+
     console.log(arrayTTRs)
   }
   
+  function getIntervaloConfianza() {
+    // promedio de replicas
+    let avg = 0
+    let r = arrayReplicas.length
+    for (let i = 0; i < r; i++) {
+      avg += arrayReplicas[i]
+    }
+    avg = avg / r
+
+
+
+    // calculando (x - avr(x))^2
+    let aux = 0
+    for (let i = 0; i < r; i++) {
+      aux += Math.pow(arrayReplicas[i] - avg, 2)
+    }
+
+    // desviación 
+    let s = Math.sqrt((1 / (r - 1)) * aux)
+
+    let intervalo = []
+
+    let interInf = avg - (s / Math.sqrt(r * 0.05))
+    let interSup = avg + (s / Math.sqrt(r * 0.05))
+
+    console.log(interInf, interSup);
+
+    intervalo.push(interInf)
+    intervalo.push(interSup)
+
+    setIntervaloDeConfianza(intervalo)
+
+  }
 
 
   return (
     <div className="App">
-      <header className="App-header">
-        Salvanos
+      <main className="App-header">
+        <div>
+          Simular réplicas
+        </div>
         <div>
           <label htmlFor="replicas">Cantidad de replicas: </label>
           <input type="number" name="" id="replicas" value={replicas} onChange={(e) => setReplicas(Number(e.target.value))} />
@@ -244,19 +280,38 @@ function App() {
         </div>
         <div>
           <div>Calcular</div>
-          <div><button onClick={() => getVariosTTR(replicas)}>Calcular</button></div> 
+          <div><button onClick={() => getVariosTTR(replicas)}>Simular réplicas</button></div> 
         </div>
 
-        <div>
-          {resultadoReplicas.length? 
-            resultadoReplicas.map((el, i) => {
-              return <div key={el}>Replica {i + 1}: TTR{i + 1} {el}</div>
+        <div className="container-replicas">
+          {arrayReplicas.length?
+            <>
+              <div><button onClick={() => getIntervaloConfianza()}>Calcular intervalo de confianza:</button></div> 
+
+              {intervaloDeConfianza.length?
+                <div>
+                  <div>El intervalo de confianza es: [{intervaloDeConfianza[0]} , {intervaloDeConfianza[1]}]</div>
+                  <div>Diferencia [{intervaloDeConfianza[1] - intervaloDeConfianza[0]}]</div>
+                </div>
+                :
+                <></>
+              }
+            </>
+            :
+            <></>
+          }
+          {arrayReplicas.length? 
+            arrayReplicas.map((el, i) => {
+              return  <div key={el} className="replica-row">
+                        <div>Replica {i + 1}</div>
+                        <div>TTR{i + 1} {el}</div>
+                      </div>
             })
             :
             <></>
           }
         </div>
-      </header>
+      </main>
     </div>
   );
 }
