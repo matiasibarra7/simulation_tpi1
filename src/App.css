@@ -1,7 +1,3 @@
-.App {
-  text-align: center;
-}
-
 
 .App-header {
   background-color: #282c34;
@@ -18,12 +14,56 @@
   color: #61dafb;
 }
 
-.container-replicas {
+.title-app {
+  margin: 1rem 0;
+  font-size: 1.5rem;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem 0;
+}
+
+.calc-button {
+  margin: 2rem 0;
+}
+
+.calc-button button {
+  height: 2rem;
+  font-size: 1.2rem;
+}
+
+.calc-button button:hover {
+  background-color: wheat;
+}
+
+.container-all {
   margin: 2rem auto 0;
-  width: 20rem;
+  width: 30rem;
+}
+
+.intervalo-data {
+  margin: 1rem 0;
+}
+
+.container-replicas {
+  margin: 1rem 0;
 }
 
 .replica-row {
   display: flex;
   justify-content: space-between;
+  border: 1px solid white;
+}
+
+.replica-number {
+  width: 35%;
+  padding: 0.4rem 0.5rem;
+}
+
+.ttr-field {
+  width: 65%;
+  padding: 0.4rem 1rem;
+  border-left: 1px solid white;
 }

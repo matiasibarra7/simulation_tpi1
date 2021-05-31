@@ -4,9 +4,9 @@ import  { useState } from 'react';
 function App() {
 
   // variables rancias
-  const [m, setM] = useState(0);
-  const [n, setN] = useState(0);
-  const [replicas, setReplicas] = useState(0);
+  const [m, setM] = useState(1);
+  const [n, setN] = useState(1);
+  const [replicas, setReplicas] = useState(1);
   const [arrayReplicas, setArrayReplicas] = useState([])
   const [intervaloDeConfianza, setIntervaloDeConfianza] = useState([])
 
@@ -245,12 +245,15 @@ function App() {
     // desviación 
     let s = Math.sqrt((1 / (r - 1)) * aux)
 
+    console.log("cant. replicas: ", r, "aux: ", aux,"s= ", s);
+    console.log("promedio: ", avg);
+
+
     let intervalo = []
 
     let interInf = avg - (s / Math.sqrt(r * 0.05))
     let interSup = avg + (s / Math.sqrt(r * 0.05))
 
-    console.log(interInf, interSup);
 
     intervalo.push(interInf)
     intervalo.push(interSup)
@@ -263,35 +266,56 @@ function App() {
   return (
     <div className="App">
       <main className="App-header">
-        <div>
+        <div className="title-app">
           Simular réplicas
         </div>
-        <div>
+        <div className="input-container">
           <label htmlFor="replicas">Cantidad de replicas: </label>
-          <input type="number" name="" id="replicas" value={replicas} onChange={(e) => setReplicas(Number(e.target.value))} />
+          <input type="number" name="" id="replicas" value={replicas} min="1" onChange={(e) => setReplicas(Number(e.target.value))} />
         </div>
-        <div>
+        <div className="input-container">
           <label htmlFor="numer_m">m: </label>
-          <input type="number" name="" id="numer_m" value={m} onChange={(e) => setM(Number(e.target.value))} />
+          <input type="number" name="" id="numer_m" value={m} min="1" onChange={(e) => setM(Number(e.target.value))} />
         </div>
-        <div>
+        <div className="input-container">
           <label htmlFor="numer_n">n: </label>
-          <input type="number" name="" id="numer_n" value={n} onChange={(e) => setN(Number(e.target.value))}/>
+          <input type="number" name="" id="numer_n" value={n} min="1" onChange={(e) => setN(Number(e.target.value))}/>
         </div>
-        <div>
-          <div>Calcular</div>
-          <div><button onClick={() => getVariosTTR(replicas)}>Simular réplicas</button></div> 
-        </div>
-
-        <div className="container-replicas">
+        
+        <div className="calc-button"><button onClick={() => getVariosTTR(replicas)}>Simular réplicas</button></div> 
+        
+        <div className="container-all">
           {arrayReplicas.length?
             <>
-              <div><button onClick={() => getIntervaloConfianza()}>Calcular intervalo de confianza:</button></div> 
+              <div className="calc-button">
+                <button onClick={() => getIntervaloConfianza()}>Calcular intervalo de confianza</button>
+                <div>**Darle clic luego de generar las réplicas</div>
+                <div>**Debe haberse generado al menos 2 réplicas</div>
+              </div>
+
+
 
               {intervaloDeConfianza.length?
                 <div>
-                  <div>El intervalo de confianza es: [{intervaloDeConfianza[0]} , {intervaloDeConfianza[1]}]</div>
-                  <div>Diferencia [{intervaloDeConfianza[1] - intervaloDeConfianza[0]}]</div>
+                  <div className="intervalo-data">
+                    <div>El intervalo de confianza es:</div> 
+                    <div> [{intervaloDeConfianza[0]} , {intervaloDeConfianza[1]}] </div>
+                  </div>
+
+                  <div className="intervalo-data">
+                    <div>Alpha utilizado</div> 
+                    <div> 0.05 </div>
+                  </div>
+
+                  <div className="intervalo-data">
+                    <div>Media:</div>
+                    <div>{ (intervaloDeConfianza[1] + intervaloDeConfianza[0]) / 2 }</div>
+                  </div>
+
+                  <div className="intervalo-data">
+                    <div>Amplitud del intervalo de confianza:</div>
+                    <div>{intervaloDeConfianza[1] - intervaloDeConfianza[0]}</div>
+                  </div>
                 </div>
                 :
                 <></>
@@ -300,16 +324,20 @@ function App() {
             :
             <></>
           }
-          {arrayReplicas.length? 
-            arrayReplicas.map((el, i) => {
-              return  <div key={el} className="replica-row">
-                        <div>Replica {i + 1}</div>
-                        <div>TTR{i + 1} {el}</div>
-                      </div>
-            })
-            :
-            <></>
-          }
+          <div className="container-replicas">  
+            {arrayReplicas.length? 
+              <>
+                {arrayReplicas.map((el, i) => {
+                  return  <div key={el} className="replica-row">
+                            <div className="replica-number"><b>Replica</b> {i + 1}</div>
+                            <div className="ttr-field"><b>TTR {i + 1}</b> {el}</div>
+                          </div>
+                })}
+              </>
+              :
+              <></>
+            }
+          </div>
         </div>
       </main>
     </div>
